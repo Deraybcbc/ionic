@@ -1,0 +1,7 @@
+{
+  "name": "Peli",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
