@@ -1,0 +1,7 @@
+{
+  "name": "AndPelis",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
