@@ -5,26 +5,49 @@
         <ion-title>BUSCADOR DE PELICULAS</ion-title>
       </ion-toolbar>
 
-      <ion-toolbar class="ion-padding">
-        <ion-searchbar placeholder="Nombre película" @ionChange="BuscarBoton"></ion-searchbar>
+      <ion-toolbar >
+        <ion-searchbar placeholder="Nombre película" @ionInput="Pillarnombre" class="barra"></ion-searchbar>
+        <ion-input label="Solid input" label-placement="floating" fill="solid" placeholder="Enter text" @ionInput="Pillarnombre" class="barra"></ion-input>
+
+        <ion-buttons slot="end" class="ion-margin-start">
+          <ion-button shape="round" @click="BuscarBoton">Buscar</ion-button>
+        </ion-buttons>
       </ion-toolbar>
 
     </ion-header>
 
     <ion-content :fullscreen="true" class="ion-padding">
 
+      <ion-row>
+        <ion-col size="12" size-md="6" size-lg="3" v-for="pelicula in peli" :key="pelicula.imdbID">
 
-      <ion-card>
-        <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/card-media.png" />
-        <ion-card-header>
-          <ion-card-title>Card Title</ion-card-title>
-          <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-        </ion-card-header>
+          <ion-card class="cards">
 
-        <ion-card-content>
-          Here's a small text description for the card content. Nothing more, nothing less.
-        </ion-card-content>
-      </ion-card>
+            <img :src="pelicula.Poster" class="imagen" alt="Poster de la película" />
+
+            <ion-card-header>
+              <ion-card-title>{{ pelicula.Title }}</ion-card-title>
+              <ion-card-subtitle>{{ pelicula.Year }}</ion-card-subtitle>
+              <ion-button shape="round" class="botonid" @click="BuscarID(pelicula.imdbID)">Ver Más</ion-button>
+            </ion-card-header>
+
+            <ion-card-content v-if="MostrarMas && pelicula.imdbID === idBuscar">
+              <ion-card-title class="text-h6">Descripción:</ion-card-title>
+              {{ info.Plot }}
+
+              <ion-card-title class="text-h6">Valoraciones:</ion-card-title>
+
+              <p v-for="infor in info.Ratings">
+                {{ infor.Source }}: {{ infor.Value }}
+              </p>
+
+              <ion-button shape="round" class="botonid"  @click="MostrarMas = false && idBuscar==0">Cerrar</ion-button>
+
+            </ion-card-content>
+
+          </ion-card>
+        </ion-col>
+      </ion-row>
 
 
     </ion-content>
@@ -32,10 +55,79 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
 import ExploreContainer from '@/components/ExploreContainer.vue';
+import { buscar, buscarID } from '@/services/conexion'
 
-const BuscarBoton = () =>{
-}
+// Definición de las propiedades reactivas
+const reveal = ref(false);
+const mostrar = ref(false);
+const MostrarMas = ref(false);
+const nombre = ref('');
+const peli = ref<object[]>([]); // Anotación de tipo para peli
+const info = ref<object>({});    // Anotación de tipo para info
+const idBuscar = ref<number>(0); // Anotación de tipo para idBuscar
+
+const Pillarnombre = (event: any) => {
+  nombre.value = event.target.value;
+};
+
+// Definición de los métodos
+const BuscarBoton = () => {
+  const valorNombre = nombre.value;
+  console.log("NOMBRE");
+  console.log(valorNombre);
+  buscar(valorNombre).then((response) => {
+    peli.value = response;
+    console.log(peli.value);
+  });
+  mostrar.value = true;
+};
+
+const BuscarID = (id: number) => {
+  const idString = id.toString(); // Convertir el número a cadena
+  console.log(idString);
+
+  buscarID(idString).then((response) => {
+    idBuscar.value = id;
+    info.value = response;
+    console.log(response);
+  });
+  idBuscar.value = 0;
+  MostrarMas.value = true;
+};
 
 </script>
+
+
+<style scoped>
+.ion-margin-start {
+  margin-left: 8px;
+  /* Ajusta este valor según lo necesites */
+  background-color: blue;
+  border-radius: 50px;
+}
+
+.cards {
+  max-height: auto;
+  max-width: 300px;
+  /* Cambia este valor según lo necesites */
+}
+
+.imagen {
+  width: auto;
+  height: 500px;
+}
+
+.barra{
+  background-color: blue;
+}
+
+.botonid {
+  width: 30%;
+  background-color: blue;
+  color: white;
+  border-radius: 50px;
+}
+</style>
