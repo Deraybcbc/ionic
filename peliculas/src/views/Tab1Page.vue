@@ -6,48 +6,47 @@
       </ion-toolbar>
 
       <ion-toolbar >
-        <ion-searchbar placeholder="Nombre película" @ionInput="Pillarnombre" class="barra"></ion-searchbar>
-        <ion-input label="Solid input" label-placement="floating" fill="solid" placeholder="Enter text" @ionInput="Pillarnombre" class="barra"></ion-input>
+        <IonSearchbar placeholder="Nombre película" @ionInput="Pillarnombre"></IonSearchbar>
 
-        <ion-buttons slot="end" class="ion-margin-start">
-          <ion-button shape="round" @click="BuscarBoton">Buscar</ion-button>
-        </ion-buttons>
+        <IonButtons slot="end" class="ion-margin-start">
+          <IonButton shape="round" @click="BuscarBoton">Buscar</IonButton>
+        </IonButtons>
       </ion-toolbar>
 
     </ion-header>
 
     <ion-content :fullscreen="true" class="ion-padding">
 
-      <ion-row>
-        <ion-col size="12" size-md="6" size-lg="3" v-for="pelicula in peli" :key="pelicula.imdbID">
+      <IonRow>
+        <IonCol size="12" size-md="6" size-lg="3" v-for="pelicula in peli" :key="pelicula.imdbID">
 
-          <ion-card class="cards">
+          <IonCard class="cards">
 
             <img :src="pelicula.Poster" class="imagen" alt="Poster de la película" />
 
-            <ion-card-header>
-              <ion-card-title>{{ pelicula.Title }}</ion-card-title>
-              <ion-card-subtitle>{{ pelicula.Year }}</ion-card-subtitle>
-              <ion-button shape="round" class="botonid" @click="BuscarID(pelicula.imdbID)">Ver Más</ion-button>
-            </ion-card-header>
+            <IonCardHeader>
+              <IonCardTitle>{{ pelicula.Title }}</IonCardTitle>
+              <IonCardSubtitle>{{ pelicula.Year }}</IonCardSubtitle>
+              <IonButton shape="round" class="botonid" @click="BuscarID(pelicula.imdbID)">Ver Más</IonButton>
+            </IonCardHeader>
 
-            <ion-card-content v-if="MostrarMas && pelicula.imdbID === idBuscar">
+            <IonCardContent v-if="MostrarMas && pelicula.imdbID === idBuscar">
               <ion-card-title class="text-h6">Descripción:</ion-card-title>
               {{ info.Plot }}
 
-              <ion-card-title class="text-h6">Valoraciones:</ion-card-title>
+              <IonCardTitle class="text-h6">Valoraciones:</IonCardTitle>
 
               <p v-for="infor in info.Ratings">
                 {{ infor.Source }}: {{ infor.Value }}
               </p>
 
-              <ion-button shape="round" class="botonid"  @click="MostrarMas = false && idBuscar==0">Cerrar</ion-button>
+              <IonButton shape="round" class="botonid"  @click="MostrarMas = false && idBuscar==0">Cerrar</IonButton>
 
-            </ion-card-content>
+            </IonCardContent>
 
-          </ion-card>
-        </ion-col>
-      </ion-row>
+          </IonCard>
+        </IonCol>
+      </IonRow>
 
 
     </ion-content>
@@ -56,7 +55,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar, IonButtons, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from '@ionic/vue';
 import ExploreContainer from '@/components/ExploreContainer.vue';
 import { buscar, buscarID } from '@/services/conexion'
 
@@ -107,6 +106,7 @@ const BuscarID = (id: number) => {
   /* Ajusta este valor según lo necesites */
   background-color: blue;
   border-radius: 50px;
+  color: white;
 }
 
 .cards {
@@ -120,9 +120,6 @@ const BuscarID = (id: number) => {
   height: 500px;
 }
 
-.barra{
-  background-color: blue;
-}
 
 .botonid {
   width: 30%;
